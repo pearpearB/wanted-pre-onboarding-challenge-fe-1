@@ -10,5 +10,5 @@ export const useInput = ({ initialValue, tag }: inputProps) => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
-  return { [tag]: { value, onChange } };
+  return { [tag]: { value, onChange, setValue } };
 };

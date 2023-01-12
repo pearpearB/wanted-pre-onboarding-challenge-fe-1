@@ -1,8 +1,8 @@
 import React from "react";
 import { useInput } from "../hooks/useInput";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { loginProps } from "../types/LoginProps";
+import { instance } from "../utils/axios";
 
 function LoginPage() {
   const { email } = useInput({ initialValue: "", tag: "email" });
@@ -16,13 +16,14 @@ function LoginPage() {
         email: email.value,
         password: password.value,
       };
-      const {
-        data: { token },
-      } = await axios.post("users/login", loginData);
-      localStorage.setItem("token", token);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const { data } = await instance.post("users/login", loginData);
+      localStorage.setItem("token", data.token);
+      // axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`; 이거 왜 안됐었을까?
+      //axios 인스턴스 만드는 걸로 변경함
       navigate("/");
-    } catch {}
+    } catch {
+      console.log("Error!");
+    }
   };
   return (
     <div>
