@@ -3,16 +3,34 @@ import LoginPage from "./pages/LoginPage";
 import JoinPage from "./pages/JoinPage";
 import MainPage from "./pages/MainPage";
 import TodoPage from "./pages/TodoPage";
+import styled from "styled-components";
+import Header from "./components/Header";
+import { ReactQueryDevtools } from "react-query/devtools";
+import TodoDetailPage from "./pages/TodoDetailPage";
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+`;
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/auth" element={<LoginPage />} />
-        <Route path="/join" element={<JoinPage />} />
-        <Route path="/todos" element={<TodoPage />} />
-        <Route path="/" element={<MainPage />} />
-      </Routes>
+      <Container>
+        <Header />
+        <Routes>
+          <Route path="/auth" element={<LoginPage />} />
+          <Route path="/join" element={<JoinPage />} />
+          <Route path="/todos" element={<TodoPage />}>
+            <Route path=":id" element={<TodoDetailPage />} />
+          </Route>
+
+          <Route path="/" element={<MainPage />} />
+        </Routes>
+      </Container>
+      <ReactQueryDevtools initialIsOpen={true} />
     </BrowserRouter>
   );
 }

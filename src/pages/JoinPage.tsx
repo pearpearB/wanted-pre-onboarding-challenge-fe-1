@@ -2,7 +2,7 @@ import React from "react";
 import { useInput } from "../hooks/useInput";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { loginProps } from "../types/LoginProps";
+import { loginProps } from "../types/types";
 
 function JoinPage() {
   const { email } = useInput({ initialValue: "", tag: "email" });

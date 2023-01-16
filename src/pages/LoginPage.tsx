@@ -1,7 +1,7 @@
 import React from "react";
 import { useInput } from "../hooks/useInput";
 import { useNavigate } from "react-router-dom";
-import { loginProps } from "../types/LoginProps";
+import { loginProps } from "../types/types";
 import { instance } from "../utils/axios";
 
 function LoginPage() {
@@ -19,8 +19,8 @@ function LoginPage() {
       const { data } = await instance.post("users/login", loginData);
       localStorage.setItem("token", data.token);
       // axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`; 이거 왜 안됐었을까?
-      //axios 인스턴스 만드는 걸로 변경함
-      navigate("/");
+      // axios 인스턴스 만드는 걸로 변경함
+      navigate("/todos");
     } catch {
       console.log("Error!");
     }
