@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { useInput } from "../hooks/useInput";
 import { instance } from "../utils/axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQueryClient } from "react-query";
+import { deleteTodo } from "../utils/apis";
+
+interface deleteTodoProps {
+  id: string;
+}
 
 interface todoItemProps {
   id: string;
@@ -11,7 +17,9 @@ interface todoItemProps {
 
 function TodoItem({ id, title, content }: todoItemProps) {
   const [isEdit, setEdit] = useState(false);
-  // const detailMatch = useMatch("/:id");
+  const { id: curID } = useParams();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { editTodoTitle } = useInput({
     initialValue: title,
     tag: "editTodoTitle",
@@ -20,15 +28,18 @@ function TodoItem({ id, title, content }: todoItemProps) {
     initialValue: content,
     tag: "editTodoContent",
   });
-  const deleteTodo = async () => {
-    try {
-      await instance.delete(`todos/${id}`);
-    } catch {
-      console.log("failed deletTodo");
+  const deleteTodoMutation = useMutation(
+    ({ id }: deleteTodoProps) => deleteTodo(id),
+    {
+      onSuccess: () => {
+        queryClient.removeQueries(["todoList", id]);
+        queryClient.invalidateQueries("todoList");
+        if (curID === id) navigate("/todos");
+      },
     }
-  };
-  const onDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
-    deleteTodo();
+  );
+  const onDeleteButton = (event: React.MouseEvent<HTMLButtonElement>) => {
+    deleteTodoMutation.mutate({ id });
   };
   const updateTodo = async () => {
     try {
@@ -63,13 +74,10 @@ function TodoItem({ id, title, content }: todoItemProps) {
         </div>
       ) : (
         <div>
-          <div>
-            <Link to={`/todos/${id}`}>{title}</Link>
-          </div>
-          {/* <div>{`content: ${content}`}</div> */}
+          <Link to={`/todos/${id}`}>{title}</Link>
         </div>
       )}
-      <button onClick={onDelete}> x </button>
+      <button onClick={onDeleteButton}> x </button>
       <button onClick={onEdit}> edit </button>
     </div>
   );
