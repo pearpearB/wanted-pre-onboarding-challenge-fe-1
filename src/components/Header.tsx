@@ -1,19 +1,38 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-const LoginButton = styled.button``;
+import { useRecoilState } from "recoil";
+import { LoginState } from "../utils/recoil";
+const LoginButton = styled.button`
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.2rem;
+`;
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+const Title = styled.div`
+  font-size: 2rem;
+`;
+
 function Header() {
-  const token = localStorage.getItem("token");
-  console.log(token);
+  const [isLogin, setLogin] = useRecoilState(LoginState);
+  const navigate = useNavigate();
+  const onLogoutHandler = () => {
+    localStorage.removeItem("token");
+    setLogin(false);
+    navigate("/");
+  };
   return (
     <Container>
-      <Link to="/auth">
-        <LoginButton>Log in</LoginButton>
-      </Link>
-      <h2>Todo List</h2>
+      {isLogin ? (
+        <LoginButton onClick={onLogoutHandler}> Log out</LoginButton>
+      ) : (
+        <Link to="/auth">
+          <LoginButton>Log in</LoginButton>
+        </Link>
+      )}
+      <Title>Todo List</Title>
     </Container>
   );
 }

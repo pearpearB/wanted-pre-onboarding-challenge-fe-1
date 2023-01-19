@@ -6,22 +6,10 @@ import { simpleTodoProps, todoListProps } from "../types/types";
 import { Outlet } from "react-router-dom";
 
 function TodoPage() {
-  // const [isUpdate, setUpdate] = useState(false);
-  // const [todoList, setTodoList] = useState<todoListProps[]>([]);
   const { todoTitle } = useInput({ initialValue: "", tag: "todoTitle" });
   const { todoContent } = useInput({ initialValue: "", tag: "todoContent" });
   const { data } = useQuery<todoListProps[]>("todoList", getTodo);
   const queryClient = useQueryClient();
-  // const update = () => {
-  //   setUpdate((cur) => !cur);
-  // };
-
-  // const createTodo = async (title: string, content: string) => {
-  //   return instance.post("/todos", {
-  //     title: title,
-  //     content: content,
-  //   });
-  // };
   const addTodo = useMutation(
     ({ title, content }: simpleTodoProps) => createTodo(title, content),
     {
@@ -33,20 +21,7 @@ function TodoPage() {
     addTodo.mutate({ title: todoTitle.value, content: todoContent.value });
     todoTitle.setValue("");
     todoContent.setValue("");
-    // update();
   };
-  // const getTodo = async () => {
-  //   try {
-  //     const { data } = await instance.get("/todos");
-  //     console.log(data.data);
-  //     setTodoList(data.data);
-  //   } catch {
-  //     console.log("failed getTodo");
-  //   }
-  // };
-  // useEffect(() => {
-  //   console.log(data);
-  // }, [data]);
   return (
     <div>
       <form onSubmit={onSubmit}>

@@ -1,8 +1,8 @@
 import React from "react";
 import { useInput } from "../hooks/useInput";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { loginProps } from "../types/types";
+import { instance } from "../utils/axios";
 
 function JoinPage() {
   const { email } = useInput({ initialValue: "", tag: "email" });
@@ -18,9 +18,8 @@ function JoinPage() {
       };
       const {
         data: { token },
-      } = await axios.post("users/create", JoinData);
+      } = await instance.post("/users/create", JoinData);
       localStorage.setItem("token", token);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       navigate("/auth");
     } catch {}
   };

@@ -1,3 +1,4 @@
+import { simpleTodoProps } from "../types/types";
 import { instance } from "./axios";
 
 export const getTodo = () => {
@@ -17,4 +18,11 @@ export const createTodo = async (title: string, content: string) => {
 
 export const deleteTodo = async (id: string) => {
   return instance.delete(`todos/${id}`);
+};
+
+export const updateTodo = async (
+  id: string,
+  { title, content }: simpleTodoProps
+) => {
+  return instance.put(`todos/${id}`, { title, content });
 };

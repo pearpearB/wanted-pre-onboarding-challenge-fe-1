@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useInput } from "../hooks/useInput";
-import { instance } from "../utils/axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
-import { deleteTodo } from "../utils/apis";
+import { deleteTodo, updateTodo } from "../utils/apis";
 
 interface deleteTodoProps {
   id: string;
@@ -16,10 +15,10 @@ interface todoItemProps {
 }
 
 function TodoItem({ id, title, content }: todoItemProps) {
-  const [isEdit, setEdit] = useState(false);
-  const { id: curID } = useParams();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { id: curID } = useParams();
+  const [isEdit, setEdit] = useState(false);
   const { editTodoTitle } = useInput({
     initialValue: title,
     tag: "editTodoTitle",
@@ -38,23 +37,28 @@ function TodoItem({ id, title, content }: todoItemProps) {
       },
     }
   );
+  const updateTodoMutation = useMutation(
+    ({ id, title, content }: todoItemProps) =>
+      updateTodo(id, { title, content }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("todoList");
+        queryClient.invalidateQueries(["todoList", id]);
+      },
+    }
+  );
   const onDeleteButton = (event: React.MouseEvent<HTMLButtonElement>) => {
     deleteTodoMutation.mutate({ id });
   };
-  const updateTodo = async () => {
-    try {
-      await instance.put(`/todos/${id}`, {
+  const onEditButton = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setEdit((cur) => !cur); //전체실행되고 바뀜....?! 네...?!?!?!?!??!?!
+    if (editTodoTitle.value === "") return; //버튼을 비활성화??
+    if (isEdit) {
+      updateTodoMutation.mutate({
+        id,
         title: editTodoTitle.value,
         content: editTodoContent.value,
       });
-    } catch {
-      console.log("failed updateTodo");
-    }
-  };
-  const onEdit = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setEdit((cur) => !cur); //전체실행되고 바뀜....?! 네...?!?!?!?!??!?!
-    if (isEdit) {
-      updateTodo();
     }
   };
   return (
@@ -78,7 +82,7 @@ function TodoItem({ id, title, content }: todoItemProps) {
         </div>
       )}
       <button onClick={onDeleteButton}> x </button>
-      <button onClick={onEdit}> edit </button>
+      <button onClick={onEditButton}> edit </button>
     </div>
   );
 }

@@ -1,13 +1,16 @@
 import React from "react";
 import { useInput } from "../hooks/useInput";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginProps } from "../types/types";
 import { instance } from "../utils/axios";
+import { useRecoilState } from "recoil";
+import { LoginState } from "../utils/recoil";
 
 function LoginPage() {
+  const navigate = useNavigate();
   const { email } = useInput({ initialValue: "", tag: "email" });
   const { password } = useInput({ initialValue: "", tag: "password" });
-  const navigate = useNavigate();
+  const [isLogin, setLogin] = useRecoilState(LoginState);
 
   const onSubmitHandler = async (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -18,8 +21,7 @@ function LoginPage() {
       };
       const { data } = await instance.post("users/login", loginData);
       localStorage.setItem("token", data.token);
-      // axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`; 이거 왜 안됐었을까?
-      // axios 인스턴스 만드는 걸로 변경함
+      if (localStorage.getItem("token")) setLogin(true);
       navigate("/todos");
     } catch {
       console.log("Error!");
@@ -36,6 +38,7 @@ function LoginPage() {
         />
         <button type="submit">로그인</button>
       </form>
+      <Link to="/join">가입이 필요하신가요?</Link>
     </div>
   );
 }
