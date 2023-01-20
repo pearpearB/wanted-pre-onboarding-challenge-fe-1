@@ -10,21 +10,24 @@ function TodoPage() {
   const { todoContent } = useInput({ initialValue: "", tag: "todoContent" });
   const { data } = useQuery<todoListProps[]>("todoList", getTodo);
   const queryClient = useQueryClient();
-  const addTodo = useMutation(
+  const addTodoMutation = useMutation(
     ({ title, content }: simpleTodoProps) => createTodo(title, content),
     {
       onSuccess: () => queryClient.invalidateQueries("todoList"),
     }
   );
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitButton = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    addTodo.mutate({ title: todoTitle.value, content: todoContent.value });
+    addTodoMutation.mutate({
+      title: todoTitle.value,
+      content: todoContent.value,
+    });
     todoTitle.setValue("");
     todoContent.setValue("");
   };
   return (
     <div>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmitButton}>
         <input
           type="text"
           value={todoTitle.value}

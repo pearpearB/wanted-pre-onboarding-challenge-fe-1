@@ -12,14 +12,10 @@ function MainPage() {
   const isLogin = useRecoilValue(LoginState);
   return (
     <MainContainer>
-      <H1>Welcome!</H1>
-      {isLogin ? (
-        <Link to="/todos">
-          <button>todo ㄱ ㄱ</button>
-        </Link>
-      ) : (
-        <div>로그인....필요...서비스..</div>
-      )}
+      <Link to="/todos">
+        <H1>Welcome!</H1>
+      </Link>
+      {isLogin ?? <div>로그인....필요...서비스..</div>}
     </MainContainer>
   );
 }

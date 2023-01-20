@@ -3,16 +3,24 @@ import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { LoginState } from "../utils/recoil";
 const LoginButton = styled.button`
-  width: 2rem;
-  height: 2rem;
+  width: 3rem;
+  height: 1.2rem;
   font-size: 0.2rem;
+  background-color: white;
+  border: 1px solid black;
+  :hover {
+    background: #e7e7e7;
+    cursor: pointer;
+  }
 `;
 const Container = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  width: 100%;
 `;
-const Title = styled.div`
+const Title = styled.span`
   font-size: 2rem;
+  margin: auto;
 `;
 
 function Header() {

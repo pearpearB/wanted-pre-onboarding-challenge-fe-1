@@ -3,7 +3,30 @@ import { useInput } from "../hooks/useInput";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
 import { deleteTodo, updateTodo } from "../utils/apis";
+import styled from "styled-components";
 
+const TodoItemContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0.2rem;
+  margin-top: 0.2rem;
+`;
+const StyledButton = styled.button`
+  width: auto;
+  height: 1rem;
+  font-size: 0.2rem;
+  background-color: white;
+  border: 1px solid black;
+  :hover {
+    background: #e7e7e7;
+    cursor: pointer;
+  }
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: black;
+`;
 interface deleteTodoProps {
   id: string;
 }
@@ -62,28 +85,30 @@ function TodoItem({ id, title, content }: todoItemProps) {
     }
   };
   return (
-    <div>
+    <TodoItemContainer>
       {isEdit ? (
         <div>
           <div>
+            title
             <input
               value={editTodoTitle.value}
               onChange={editTodoTitle.onChange}
             />
           </div>
+          content
           <input
             value={editTodoContent.value}
             onChange={editTodoContent.onChange}
           />
         </div>
       ) : (
-        <div>
-          <Link to={`/todos/${id}`}>{title}</Link>
-        </div>
+        <StyledLink to={`/todos/${id}`}>{title}</StyledLink>
       )}
-      <button onClick={onDeleteButton}> x </button>
-      <button onClick={onEditButton}> edit </button>
-    </div>
+      <div>
+        <StyledButton onClick={onDeleteButton}> x </StyledButton>
+        <StyledButton onClick={onEditButton}> edit </StyledButton>
+      </div>
+    </TodoItemContainer>
   );
 }
 
