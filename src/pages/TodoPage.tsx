@@ -29,11 +29,13 @@ function TodoPage() {
     <div>
       <form onSubmit={onSubmitButton}>
         <input
+          placeholder="title"
           type="text"
           value={todoTitle.value}
           onChange={todoTitle.onChange}
         />
         <input
+          placeholder="content"
           type="text"
           value={todoContent.value}
           onChange={todoContent.onChange}

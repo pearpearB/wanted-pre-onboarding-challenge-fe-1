@@ -21,10 +21,12 @@ function TodoDetailPage() {
   return (
     <TodoDetailContainer>
       {`<Detail>`}
+      <div> created: {data.createdAt.substring(0, 10)}</div>
+      <div> updated: {data.updatedAt.substring(0, 10)}</div>
+      <div>{`> Title`}</div>
       <div>{data.title}</div>
+      <div>{`> Content`}</div>
       <div>{data.content}</div>
-      <div>{data.createdAt}</div>
-      <div>{data.updatedAt}</div>
     </TodoDetailContainer>
   );
 }
