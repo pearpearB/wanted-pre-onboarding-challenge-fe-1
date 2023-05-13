@@ -1,45 +1,34 @@
-import React from "react";
-import { useInput } from "../hooks/useInput";
-import { Link, useNavigate } from "react-router-dom";
-import { loginProps } from "../types/types";
-import { instance } from "../utils/axios";
-import { useRecoilState } from "recoil";
-import { LoginState } from "../utils/recoil";
+import { Link, useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { loginProps } from '../types/types';
+import { LoginState } from '../utils/recoil';
+import instance from '../utils/axios';
+import JoinLoginForm from '../components/JoinLoginForm';
 
 function LoginPage() {
-  const navigate = useNavigate();
-  const { email } = useInput({ initialValue: "", tag: "email" });
-  const { password } = useInput({ initialValue: "", tag: "password" });
   const [isLogin, setLogin] = useRecoilState(LoginState);
+  const navigate = useNavigate();
 
-  const onSubmitHandler = async (event: React.ChangeEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const onRequestHandler = async (body: loginProps) => {
     try {
-      const loginData: loginProps = {
-        email: email.value,
-        password: password.value,
-      };
-      const { data } = await instance.post("users/login", loginData);
-      localStorage.setItem("token", data.token);
-      if (localStorage.getItem("token")) setLogin(true);
-      navigate("/todos");
-    } catch {
-      console.log("Error!");
+      const { data } = await instance.post('users/create', body);
+      localStorage.setItem('wanted-token', data.token);
+      if (localStorage.getItem('token')) setLogin(true);
+      navigate('/todos');
+    } catch (e: any) {
+      console.log(e.response.data.details);
     }
   };
+
   return (
-    <div>
-      <form onSubmit={onSubmitHandler}>
-        <input type="email" value={email.value} onChange={email.onChange} />
-        <input
-          type="password"
-          value={password.value}
-          onChange={password.onChange}
-        />
-        <button type="submit">로그인</button>
-      </form>
-      <Link to="/join">가입이 필요하신가요?</Link>
-    </div>
+    <main>
+      <JoinLoginForm
+        id='login-form'
+        value='로그인'
+        onRequest={onRequestHandler}
+      />
+      <Link to='/join'>가입이 필요하신가요?</Link>
+    </main>
   );
 }
 
