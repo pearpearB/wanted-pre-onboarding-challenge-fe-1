@@ -1,23 +1,14 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { loginProps } from '../types/types';
 import { LoginState } from '../utils/recoil';
-import instance from '../utils/axios';
 import JoinLoginForm from '../components/JoinLoginForm';
 
 function LoginPage() {
   const [isLogin, setLogin] = useRecoilState(LoginState);
-  const navigate = useNavigate();
 
-  const onRequestHandler = async (body: loginProps) => {
-    try {
-      const { data } = await instance.post('users/create', body);
-      localStorage.setItem('wanted-token', data.token);
-      if (localStorage.getItem('token')) setLogin(true);
-      navigate('/todos');
-    } catch (e: any) {
-      console.log(e.response.data.details);
-    }
+  const fetchNextHandler = (token: string) => {
+    localStorage.setItem('wanted-token', token);
+    if (localStorage.getItem('token')) setLogin(true);
   };
 
   return (
@@ -25,7 +16,9 @@ function LoginPage() {
       <JoinLoginForm
         id='login-form'
         value='로그인'
-        onRequest={onRequestHandler}
+        onSubmit='users/create'
+        onSuccess='/todos'
+        onNext={fetchNextHandler}
       />
       <Link to='/join'>가입이 필요하신가요?</Link>
     </main>
